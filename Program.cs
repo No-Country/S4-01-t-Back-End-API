@@ -13,8 +13,8 @@ var app = builder.Build();
 app.ConfigureSwagger();
 
 app
-    .MapUserEndPoints()
-    .MapDogEndPoints();
+    .MapUserEndPoints();
+    //.MapDogEndPoints();
 
 app.UseHttpsRedirection();
 
