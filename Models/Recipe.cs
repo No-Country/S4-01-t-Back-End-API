@@ -50,7 +50,7 @@ namespace S4_Back_End_API.Models
         public Flavor Flavor { get; set; }
 
         // Usuario que creó la receta
-        //public int UserId { get; set; }
+        public int AppUserId { get; set; }
         public AppUser AppUser { get; set; }
     }
 }

@@ -10,10 +10,10 @@ public static class MapEndPoints
         return app;
     }
 
-    //public static WebApplication MapDogEndPoints(this WebApplication app)
+    //public static WebApplication MapSwipeEndPoints(this WebApplication app)
     //{
-    //    //app.MapGet("/Dog/{name}", (string name) => $"Good Bye, {name}!");     //Quedo a modo de ejemplo de lo que podriamos llamar o usar
+    //    //app.MapGet("/swipe/{name}");
     //    return app;
     //}
-    
+
 }

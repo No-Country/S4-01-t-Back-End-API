@@ -12,7 +12,7 @@ using S4_Back_End_API.Data;
 namespace S4_Back_End_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221009060725_InitialMigration")]
+    [Migration("20221010002954_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -177,7 +177,7 @@ namespace S4_Back_End_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecipeId"), 1L, 1);
 
-                    b.Property<int>("AppUserUserId")
+                    b.Property<int>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreationDate")
@@ -217,7 +217,7 @@ namespace S4_Back_End_API.Migrations
 
                     b.HasKey("RecipeId");
 
-                    b.HasIndex("AppUserUserId");
+                    b.HasIndex("AppUserId");
 
                     b.HasIndex("DifficultyLevelId");
 
@@ -341,7 +341,7 @@ namespace S4_Back_End_API.Migrations
                 {
                     b.HasOne("S4_Back_End_API.Models.AppUser", "AppUser")
                         .WithMany("Recipes")
-                        .HasForeignKey("AppUserUserId")
+                        .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

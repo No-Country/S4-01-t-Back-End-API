@@ -34,7 +34,7 @@ namespace S4_Back_End_API.Data
             modelBuilder.Entity<Recipe_User_Like>()
                 .HasOne(u => u.AppUser)
                 .WithMany(rul => rul.Recipe_User_Likes)
-                .HasForeignKey(u => u.UserId)
+                .HasForeignKey(u => u.AppUserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Matches   
@@ -48,7 +48,7 @@ namespace S4_Back_End_API.Data
             modelBuilder.Entity<Recipe_User_Match>()
                 .HasOne(u => u.AppUser)
                 .WithMany(rum => rum.Recipe_User_Matches)
-                .HasForeignKey(u => u.UserId)
+                .HasForeignKey(u => u.AppUserId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
 
