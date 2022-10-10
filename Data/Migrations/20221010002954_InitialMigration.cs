@@ -115,14 +115,14 @@ namespace S4_Back_End_API.Migrations
                     DifficultyLevelId = table.Column<int>(type: "int", nullable: false),
                     TimeOfDayId = table.Column<int>(type: "int", nullable: false),
                     FlavorId = table.Column<int>(type: "int", nullable: false),
-                    AppUserUserId = table.Column<int>(type: "int", nullable: false)
+                    AppUserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Recipes", x => x.RecipeId);
                     table.ForeignKey(
-                        name: "FK_Recipes_AppUsers_AppUserUserId",
-                        column: x => x.AppUserUserId,
+                        name: "FK_Recipes_AppUsers_AppUserId",
+                        column: x => x.AppUserId,
                         principalTable: "AppUsers",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
@@ -286,9 +286,9 @@ namespace S4_Back_End_API.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Recipes_AppUserUserId",
+                name: "IX_Recipes_AppUserId",
                 table: "Recipes",
-                column: "AppUserUserId");
+                column: "AppUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Recipes_DifficultyLevelId",

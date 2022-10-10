@@ -10,7 +10,7 @@ namespace S4_Back_End_API.Models
 
         public int RecipeId { get; set; }
         public Recipe Recipe { get; set; }
-        public int UserId { get; set; }
+        public int AppUserId { get; set; }
         public AppUser AppUser { get; set; }
 
     }
