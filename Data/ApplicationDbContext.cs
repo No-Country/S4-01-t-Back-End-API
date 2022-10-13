@@ -14,42 +14,44 @@ namespace S4_Back_End_API.Data
         {
             // Diet Types
             modelBuilder.Entity<Recipe_DietType>()
-                .HasOne(r => r.Recipe)
-                .WithMany(rdt => rdt.Recipe_DietTypes)
-                .HasForeignKey(r => r.RecipeId);
+                        .HasOne(r => r.Recipe)
+                        .WithMany(rdt => rdt.Recipe_DietTypes)
+                        .HasForeignKey(r => r.RecipeId)
+                        .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Recipe_DietType>()
-                .HasOne(dt => dt.DietType)
-                .WithMany(rdt => rdt.Recipe_DietTypes)
-                .HasForeignKey(dt => dt.DietTypeId);
+                        .HasOne(dt => dt.DietType)
+                        .WithMany(rdt => rdt.Recipe_DietTypes)
+                        .HasForeignKey(dt => dt.DietTypeId)
+                        .OnDelete(DeleteBehavior.Cascade);
 
             // Likes
             // # CHECK Delete Behaviors # //
             modelBuilder.Entity<Recipe_User_Like>()
-                .HasOne(r => r.Recipe)
-                .WithMany(rul => rul.Recipe_User_Likes)
-                .HasForeignKey(r => r.RecipeId)
-                .OnDelete(DeleteBehavior.Restrict);
+                        .HasOne(r => r.Recipe)
+                        .WithMany(rul => rul.Recipe_User_Likes)
+                        .HasForeignKey(r => r.RecipeId)
+                        .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Recipe_User_Like>()
-                .HasOne(u => u.AppUser)
-                .WithMany(rul => rul.Recipe_User_Likes)
-                .HasForeignKey(u => u.AppUserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                        .HasOne(u => u.AppUser)
+                        .WithMany(rul => rul.Recipe_User_Likes)
+                        .HasForeignKey(u => u.AppUserId)
+                        .OnDelete(DeleteBehavior.Cascade);
 
             // Matches   
             // # CHECK Delete Behaviors # //
             modelBuilder.Entity<Recipe_User_Match>()
-                .HasOne(r => r.Recipe)
-                .WithMany(rum => rum.Recipe_User_Matches)
-                .HasForeignKey(r => r.RecipeId)
-                .OnDelete(DeleteBehavior.Restrict);
+                        .HasOne(r => r.Recipe)
+                        .WithMany(rum => rum.Recipe_User_Matches)
+                        .HasForeignKey(r => r.RecipeId)
+                        .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Recipe_User_Match>()
-                .HasOne(u => u.AppUser)
-                .WithMany(rum => rum.Recipe_User_Matches)
-                .HasForeignKey(u => u.AppUserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                        .HasOne(u => u.AppUser)
+                        .WithMany(rum => rum.Recipe_User_Matches)
+                        .HasForeignKey(u => u.AppUserId)
+                        .OnDelete(DeleteBehavior.Cascade);
         }
 
         public DbSet<AppUser>? AppUsers { get; set; }
