@@ -26,11 +26,12 @@ namespace S4_Back_End_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Recipe>>> GetRecipes()
         {
+
             var recipes = await _context.Recipes
-                .Include(r => r.Recipe_User_Likes)
-                .Include(r => r.Recipe_DietTypes)
-                .Include(r => r.Ingredients)
-                .ToListAsync();
+                                .Include(r => r.Recipe_User_Likes)
+                                .Include(r => r.Recipe_DietTypes)
+                                .Include(r => r.Ingredients)
+                                .ToListAsync();
 
             foreach (var r in recipes)
             {
@@ -48,10 +49,10 @@ namespace S4_Back_End_API.Controllers
             try 
             {
                 var recipe = await _context.Recipes
-                    .Include(r => r.Recipe_User_Likes)
-                    .Include(r => r.Recipe_DietTypes)
-                    .Include(r => r.Ingredients)
-                    .FirstOrDefaultAsync(r => r.RecipeId == id);
+                                    .Include(r => r.Recipe_User_Likes)
+                                    .Include(r => r.Recipe_DietTypes)
+                                    .Include(r => r.Ingredients)
+                                    .FirstOrDefaultAsync(r => r.RecipeId == id);
                 
                 if(recipe == null)
                 {
