@@ -33,11 +33,13 @@ namespace S4_Back_End_API.Controllers
                     .Include(r => r.Recipe_User_Matches)
                     .ToListAsync();
 
-                foreach (var re in recipes)
+                if (recipes.Any())
                 {
-                    re.TotalLikes = re.Recipe_User_Likes.Count;
+                    foreach (var re in recipes)
+                    {
+                        re.TotalLikes = re.Recipe_User_Likes.Count;
+                    }
                 }
-
                 //var recipePreview = new List<Recipe>();
                 //var rece = new Recipe();
                 //var dt = new List<String>();

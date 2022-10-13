@@ -35,13 +35,13 @@ namespace S4_Back_End_API.Models
         public DateTime SignUpDate { get; set; } = DateTime.Now;
 
         // Navigation Props
-        public List<Recipe>? Recipes { get; set; } = new();
-        public List<Recipe_User_Like>? Recipe_User_Likes { get; set; } = new();
-        public List<Recipe_User_Match>? Recipe_User_Matches { get; set; } = new();
+        public List<Recipe>? Recipes { get; set; }
+        public List<Recipe_User_Like>? Recipe_User_Likes { get; set; }
+        public List<Recipe_User_Match>? Recipe_User_Matches { get; set; }
 
         [Required]
         [DefaultValue(1)]
-        //public int UserRoleId { get; set; }
+        public int UserRoleId { get; set; }
         public AppUserRole AppUserRole { get; set; }
 
         //*******************//

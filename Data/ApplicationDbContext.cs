@@ -16,12 +16,14 @@ namespace S4_Back_End_API.Data
             modelBuilder.Entity<Recipe_DietType>()
                 .HasOne(r => r.Recipe)
                 .WithMany(rdt => rdt.Recipe_DietTypes)
-                .HasForeignKey(r => r.RecipeId);
+                .HasForeignKey(r => r.RecipeId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Recipe_DietType>()
                 .HasOne(dt => dt.DietType)
                 .WithMany(rdt => rdt.Recipe_DietTypes)
-                .HasForeignKey(dt => dt.DietTypeId);
+                .HasForeignKey(dt => dt.DietTypeId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Likes
             // # CHECK Delete Behaviors # //
@@ -29,7 +31,7 @@ namespace S4_Back_End_API.Data
                 .HasOne(r => r.Recipe)
                 .WithMany(rul => rul.Recipe_User_Likes)
                 .HasForeignKey(r => r.RecipeId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Recipe_User_Like>()
                 .HasOne(u => u.AppUser)
@@ -43,7 +45,7 @@ namespace S4_Back_End_API.Data
                 .HasOne(r => r.Recipe)
                 .WithMany(rum => rum.Recipe_User_Matches)
                 .HasForeignKey(r => r.RecipeId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Recipe_User_Match>()
                 .HasOne(u => u.AppUser)

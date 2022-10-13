@@ -18,7 +18,7 @@ namespace S4_Back_End_API.Models
 
         [Required]
         [MaxLength(4000)]
-        public string RecipeSteps { get; set; } = string.Empty ;
+        public string RecipeSteps { get; set; } = string.Empty;
 
         [Required]
         public DateTime CreationDate { get; set; } = DateTime.Now;
@@ -32,12 +32,12 @@ namespace S4_Back_End_API.Models
         public int? TotalLikes { get; set; }
 
         // Navigation Props
-        public List<Recipe_DietType>? Recipe_DietTypes { get; set; } = new ();
-        public List<Recipe_User_Like>? Recipe_User_Likes { get; set; } = new();
-        public List<Recipe_User_Match>? Recipe_User_Matches { get; set; } = new();
+        public List<Recipe_DietType>? Recipe_DietTypes { get; set; }
+        public List<Recipe_User_Like>? Recipe_User_Likes { get; set; }
+        public List<Recipe_User_Match>? Recipe_User_Matches { get; set; }
 
         // # # #   CHECK!   # # # //
-        public List<Ingredient> Ingredients { get; set; } = new ();
+        public List<Ingredient> Ingredients { get; set; }
         // - - - - - - - - - - - //
 
         public int DifficultyLevelId { get; set; }
