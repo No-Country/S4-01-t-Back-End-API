@@ -6,21 +6,20 @@ using S4_Back_End_API.StartUp;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.RegisterServices();
-builder.Services.AddControllers()
-    .AddNewtonsoftJson(options => {
-                        options.SerializerSettings.
-                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                        });
+
+builder.Services.AddAMapper();
+
+builder.Services
+                .AddControllers()
+                .AddNewtonJson();
+
 builder.Services.DBContext(builder);
 
 var app = builder.Build();
 
 app.ConfigureSwagger();
 
-
-app
-    .MapUserEndPoints();
-    //.MapDogEndPoints();
+app.MapUserEndPoints();
 
 app.UseHttpsRedirection();
 

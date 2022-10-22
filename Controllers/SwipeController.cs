@@ -25,7 +25,7 @@ namespace S4_Back_End_API.Controllers
         {
             try
             {
-                var recipes = await _context.Recipes
+                var recipes = await _context.Recipe_DietType
                     //.Include(r => r.AppUser)
                     .Include(r => r.Ingredients)
                     .Include(r => r.Recipe_DietTypes)

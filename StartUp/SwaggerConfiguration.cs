@@ -1,4 +1,6 @@
-﻿namespace S4_Back_End_API.StartUp;
+﻿using System.Configuration;
+
+namespace S4_Back_End_API.StartUp;
 
 public static class SwaggerConfiguration
 {
