@@ -9,11 +9,4 @@ public static class MapEndPoints
         //app.MapGet("/User/{name}", (string name) => $"Hello, {name}!");     //Quedo a modo de ejemplo de lo que podriamos llamar o usar
         return app;
     }
-
-    //public static WebApplication MapSwipeEndPoints(this WebApplication app)
-    //{
-    //    //app.MapGet("/swipe/{name}");
-    //    return app;
-    //}
-
 }

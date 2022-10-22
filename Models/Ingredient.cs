@@ -15,7 +15,8 @@ namespace S4_Back_End_API.Models
         public string IngredientAmount { get; set; } = string.Empty;
 
         // Navigation Props
+        [Required]
         public int RecipeId { get; set; }
-        public Recipe Recipe { get; set; }
+        public Recipe Recipe { get; set; } = new Recipe();
     }
 }

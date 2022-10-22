@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using S4_Back_End_API.Data;
 
@@ -11,9 +12,10 @@ using S4_Back_End_API.Data;
 namespace S4_Back_End_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221018065603_ModifiedAppUsserRoleFKinAppUserModel")]
+    partial class ModifiedAppUsserRoleFKinAppUserModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,22 +37,15 @@ namespace S4_Back_End_API.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)");
 
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<byte[]>("PasswordHash")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("PasswordResetToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("PasswordSalt")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<DateTime?>("ResetTokenExpires")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("SignUpDate")
                         .HasColumnType("datetime2");
@@ -67,13 +62,9 @@ namespace S4_Back_End_API.Migrations
                     b.Property<int>("UserRoleId")
                         .HasColumnType("int");
 
-                    b.Property<string>("VerificationToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("VerifiedAt")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("UserId");
+
+                    b.HasIndex("UserRoleId");
 
                     b.ToTable("AppUsers");
                 });
@@ -186,10 +177,7 @@ namespace S4_Back_End_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecipeId"), 1L, 1);
 
-                    b.Property<int>("AppUserIds")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("AppUserUserId")
+                    b.Property<int>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreationDate")
@@ -221,9 +209,13 @@ namespace S4_Back_End_API.Migrations
 
                     b.HasKey("RecipeId");
 
-                    b.HasIndex("AppUserUserId");
+                    b.HasIndex("AppUserId");
 
-                    b.ToTable("Recipe_DietType");
+                    b.HasIndex("DifficultyLevelId");
+
+                    b.HasIndex("FlavorId");
+
+                    b.ToTable("Recipes");
                 });
 
             modelBuilder.Entity("S4_Back_End_API.Models.Recipe_DietType", b =>
@@ -362,6 +354,17 @@ namespace S4_Back_End_API.Migrations
                     b.ToTable("TimesOfDay");
                 });
 
+            modelBuilder.Entity("S4_Back_End_API.Models.AppUser", b =>
+                {
+                    b.HasOne("S4_Back_End_API.Models.AppUserRole", "AppUserRole")
+                        .WithMany()
+                        .HasForeignKey("UserRoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUserRole");
+                });
+
             modelBuilder.Entity("S4_Back_End_API.Models.Ingredient", b =>
                 {
                     b.HasOne("S4_Back_End_API.Models.Recipe", "Recipe")
@@ -375,9 +378,29 @@ namespace S4_Back_End_API.Migrations
 
             modelBuilder.Entity("S4_Back_End_API.Models.Recipe", b =>
                 {
-                    b.HasOne("S4_Back_End_API.Models.AppUser", null)
+                    b.HasOne("S4_Back_End_API.Models.AppUser", "AppUser")
                         .WithMany("Recipes")
-                        .HasForeignKey("AppUserUserId");
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("S4_Back_End_API.Models.DifficultyLevel", "DifficultyLevel")
+                        .WithMany()
+                        .HasForeignKey("DifficultyLevelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("S4_Back_End_API.Models.Flavor", "Flavor")
+                        .WithMany()
+                        .HasForeignKey("FlavorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("DifficultyLevel");
+
+                    b.Navigation("Flavor");
                 });
 
             modelBuilder.Entity("S4_Back_End_API.Models.Recipe_DietType", b =>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using S4_Back_End_API.Data;
+using S4_Back_End_API.Mappings;
 using System;
 using System.Security.Cryptography.X509Certificates;
 
@@ -12,7 +13,7 @@ public static class DependencyInjectionSetup
     {
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
-        // Enable CORS
+        // Add CORS
         services.AddCors(c =>
         {
             c.AddPolicy("AllowOrigin",
@@ -21,6 +22,9 @@ public static class DependencyInjectionSetup
                 .AllowAnyMethod()
                 .AllowAnyHeader());
         });
+
+        // ADD Transients, Scope, Singletons, etc. HERE
+        //services.AddTransient<>();
 
         return services;
     }
@@ -41,10 +45,22 @@ public static class DependencyInjectionSetup
         return app;
     }
 
-    //public static IServiceCollection NewtonJson(this IServiceCollection services)
-    //{
-    //    var newton = "blah";
+    public static IServiceCollection AddAMapper(this IServiceCollection services)
+    {
+        //services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        services.AddAutoMapper(typeof(AutoMapperProfile));
+        return services;
+    }
 
-    //    return newton;
-    //}
+    public static IMvcBuilder AddNewtonJson(this IMvcBuilder newton)
+    {
+        newton.AddNewtonsoftJson(options =>
+        {
+            options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+            options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Local;
+            options.UseCamelCasing(false);
+        });
+        return newton;
+    }
 }

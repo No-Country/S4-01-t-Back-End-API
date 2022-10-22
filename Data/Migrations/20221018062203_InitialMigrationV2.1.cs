@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace S4_Back_End_API.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class InitialMigrationV21 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -62,7 +62,7 @@ namespace S4_Back_End_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TimeOfDays",
+                name: "TimesOfDay",
                 columns: table => new
                 {
                     TimeOfDayId = table.Column<int>(type: "int", nullable: false)
@@ -71,7 +71,7 @@ namespace S4_Back_End_API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TimeOfDays", x => x.TimeOfDayId);
+                    table.PrimaryKey("PK_TimesOfDay", x => x.TimeOfDayId);
                 });
 
             migrationBuilder.CreateTable(
@@ -86,6 +86,7 @@ namespace S4_Back_End_API.Migrations
                     Password = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     UserPicturePath = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
                     SignUpDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserRoleId = table.Column<int>(type: "int", nullable: false),
                     AppUserRoleUserRoleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -107,13 +108,11 @@ namespace S4_Back_End_API.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PreparationTime = table.Column<int>(type: "int", nullable: false),
                     RecipeTitle = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    RecipeSteps = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastEditDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RecipePicturePath = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     TotalLikes = table.Column<int>(type: "int", nullable: true),
                     DifficultyLevelId = table.Column<int>(type: "int", nullable: false),
-                    TimeOfDayId = table.Column<int>(type: "int", nullable: false),
                     FlavorId = table.Column<int>(type: "int", nullable: false),
                     AppUserId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -137,12 +136,6 @@ namespace S4_Back_End_API.Migrations
                         column: x => x.FlavorId,
                         principalTable: "Flavors",
                         principalColumn: "FlavorId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Recipes_TimeOfDays_TimeOfDayId",
-                        column: x => x.TimeOfDayId,
-                        principalTable: "TimeOfDays",
-                        principalColumn: "TimeOfDayId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -194,20 +187,46 @@ namespace S4_Back_End_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Recipe_TimesOfDay",
+                columns: table => new
+                {
+                    RecipeTimeOfDayId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RecipeId = table.Column<int>(type: "int", nullable: false),
+                    TimeOfDayId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Recipe_TimesOfDay", x => x.RecipeTimeOfDayId);
+                    table.ForeignKey(
+                        name: "FK_Recipe_TimesOfDay_Recipes_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "Recipes",
+                        principalColumn: "RecipeId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Recipe_TimesOfDay_TimesOfDay_TimeOfDayId",
+                        column: x => x.TimeOfDayId,
+                        principalTable: "TimesOfDay",
+                        principalColumn: "TimeOfDayId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Recipe_User_Likes",
                 columns: table => new
                 {
                     LikeId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RecipeId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    AppUserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Recipe_User_Likes", x => x.LikeId);
                     table.ForeignKey(
-                        name: "FK_Recipe_User_Likes_AppUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Recipe_User_Likes_AppUsers_AppUserId",
+                        column: x => x.AppUserId,
                         principalTable: "AppUsers",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
@@ -226,14 +245,14 @@ namespace S4_Back_End_API.Migrations
                     MatchId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RecipeId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    AppUserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Recipe_User_Matches", x => x.MatchId);
                     table.ForeignKey(
-                        name: "FK_Recipe_User_Matches_AppUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Recipe_User_Matches_AppUsers_AppUserId",
+                        column: x => x.AppUserId,
                         principalTable: "AppUsers",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
@@ -243,6 +262,27 @@ namespace S4_Back_End_API.Migrations
                         principalTable: "Recipes",
                         principalColumn: "RecipeId",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RecipeSteps",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StepNumber = table.Column<int>(type: "int", nullable: false),
+                    StepDescription = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
+                    RecipeId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RecipeSteps", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RecipeSteps_Recipes_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "Recipes",
+                        principalColumn: "RecipeId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -266,24 +306,34 @@ namespace S4_Back_End_API.Migrations
                 column: "RecipeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Recipe_TimesOfDay_RecipeId",
+                table: "Recipe_TimesOfDay",
+                column: "RecipeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Recipe_TimesOfDay_TimeOfDayId",
+                table: "Recipe_TimesOfDay",
+                column: "TimeOfDayId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Recipe_User_Likes_AppUserId",
+                table: "Recipe_User_Likes",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Recipe_User_Likes_RecipeId",
                 table: "Recipe_User_Likes",
                 column: "RecipeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Recipe_User_Likes_UserId",
-                table: "Recipe_User_Likes",
-                column: "UserId");
+                name: "IX_Recipe_User_Matches_AppUserId",
+                table: "Recipe_User_Matches",
+                column: "AppUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Recipe_User_Matches_RecipeId",
                 table: "Recipe_User_Matches",
                 column: "RecipeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Recipe_User_Matches_UserId",
-                table: "Recipe_User_Matches",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Recipes_AppUserId",
@@ -301,9 +351,9 @@ namespace S4_Back_End_API.Migrations
                 column: "FlavorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Recipes_TimeOfDayId",
-                table: "Recipes",
-                column: "TimeOfDayId");
+                name: "IX_RecipeSteps_RecipeId",
+                table: "RecipeSteps",
+                column: "RecipeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -315,13 +365,22 @@ namespace S4_Back_End_API.Migrations
                 name: "Recipe_DietTypes");
 
             migrationBuilder.DropTable(
+                name: "Recipe_TimesOfDay");
+
+            migrationBuilder.DropTable(
                 name: "Recipe_User_Likes");
 
             migrationBuilder.DropTable(
                 name: "Recipe_User_Matches");
 
             migrationBuilder.DropTable(
+                name: "RecipeSteps");
+
+            migrationBuilder.DropTable(
                 name: "DietTypes");
+
+            migrationBuilder.DropTable(
+                name: "TimesOfDay");
 
             migrationBuilder.DropTable(
                 name: "Recipes");
@@ -334,9 +393,6 @@ namespace S4_Back_End_API.Migrations
 
             migrationBuilder.DropTable(
                 name: "Flavors");
-
-            migrationBuilder.DropTable(
-                name: "TimeOfDays");
 
             migrationBuilder.DropTable(
                 name: "AppUserRoles");

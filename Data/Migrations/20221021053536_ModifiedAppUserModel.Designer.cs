@@ -12,14 +12,14 @@ using S4_Back_End_API.Data;
 namespace S4_Back_End_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221010002954_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20221021053536_ModifiedAppUserModel")]
+    partial class ModifiedAppUserModel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.9")
+                .HasAnnotation("ProductVersion", "6.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -32,23 +32,27 @@ namespace S4_Back_End_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"), 1L, 1);
 
-                    b.Property<int>("AppUserRoleUserRoleId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)");
 
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<byte[]>("PasswordHash")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("PasswordResetToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<DateTime?>("ResetTokenExpires")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("SignUpDate")
                         .HasColumnType("datetime2");
@@ -62,9 +66,16 @@ namespace S4_Back_End_API.Migrations
                         .HasMaxLength(400)
                         .HasColumnType("nvarchar(400)");
 
-                    b.HasKey("UserId");
+                    b.Property<int>("UserRoleId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("AppUserRoleUserRoleId");
+                    b.Property<string>("VerificationToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("VerifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UserId");
 
                     b.ToTable("AppUsers");
                 });
@@ -177,7 +188,8 @@ namespace S4_Back_End_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecipeId"), 1L, 1);
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreationDate")
@@ -199,18 +211,10 @@ namespace S4_Back_End_API.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<string>("RecipeSteps")
-                        .IsRequired()
-                        .HasMaxLength(4000)
-                        .HasColumnType("nvarchar(4000)");
-
                     b.Property<string>("RecipeTitle")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("TimeOfDayId")
-                        .HasColumnType("int");
 
                     b.Property<int?>("TotalLikes")
                         .HasColumnType("int");
@@ -218,12 +222,6 @@ namespace S4_Back_End_API.Migrations
                     b.HasKey("RecipeId");
 
                     b.HasIndex("AppUserId");
-
-                    b.HasIndex("DifficultyLevelId");
-
-                    b.HasIndex("FlavorId");
-
-                    b.HasIndex("TimeOfDayId");
 
                     b.ToTable("Recipes");
                 });
@@ -251,6 +249,29 @@ namespace S4_Back_End_API.Migrations
                     b.ToTable("Recipe_DietTypes");
                 });
 
+            modelBuilder.Entity("S4_Back_End_API.Models.Recipe_TimeOfDay", b =>
+                {
+                    b.Property<int>("RecipeTimeOfDayId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecipeTimeOfDayId"), 1L, 1);
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TimeOfDayId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RecipeTimeOfDayId");
+
+                    b.HasIndex("RecipeId");
+
+                    b.HasIndex("TimeOfDayId");
+
+                    b.ToTable("Recipe_TimesOfDay");
+                });
+
             modelBuilder.Entity("S4_Back_End_API.Models.Recipe_User_Like", b =>
                 {
                     b.Property<int>("LikeId")
@@ -259,17 +280,17 @@ namespace S4_Back_End_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LikeId"), 1L, 1);
 
-                    b.Property<int>("RecipeId")
+                    b.Property<int>("AppUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("RecipeId")
                         .HasColumnType("int");
 
                     b.HasKey("LikeId");
 
-                    b.HasIndex("RecipeId");
+                    b.HasIndex("AppUserId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("RecipeId");
 
                     b.ToTable("Recipe_User_Likes");
                 });
@@ -282,19 +303,45 @@ namespace S4_Back_End_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MatchId"), 1L, 1);
 
-                    b.Property<int>("RecipeId")
+                    b.Property<int>("AppUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("RecipeId")
                         .HasColumnType("int");
 
                     b.HasKey("MatchId");
 
+                    b.HasIndex("AppUserId");
+
                     b.HasIndex("RecipeId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Recipe_User_Matches");
+                });
+
+            modelBuilder.Entity("S4_Back_End_API.Models.RecipeStep", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StepDescription")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
+
+                    b.Property<int>("StepNumber")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("RecipeSteps");
                 });
 
             modelBuilder.Entity("S4_Back_End_API.Models.TimeOfDay", b =>
@@ -312,18 +359,7 @@ namespace S4_Back_End_API.Migrations
 
                     b.HasKey("TimeOfDayId");
 
-                    b.ToTable("TimeOfDays");
-                });
-
-            modelBuilder.Entity("S4_Back_End_API.Models.AppUser", b =>
-                {
-                    b.HasOne("S4_Back_End_API.Models.AppUserRole", "AppUserRole")
-                        .WithMany()
-                        .HasForeignKey("AppUserRoleUserRoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUserRole");
+                    b.ToTable("TimesOfDay");
                 });
 
             modelBuilder.Entity("S4_Back_End_API.Models.Ingredient", b =>
@@ -339,37 +375,11 @@ namespace S4_Back_End_API.Migrations
 
             modelBuilder.Entity("S4_Back_End_API.Models.Recipe", b =>
                 {
-                    b.HasOne("S4_Back_End_API.Models.AppUser", "AppUser")
+                    b.HasOne("S4_Back_End_API.Models.AppUser", null)
                         .WithMany("Recipes")
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("S4_Back_End_API.Models.DifficultyLevel", "DifficultyLevel")
-                        .WithMany()
-                        .HasForeignKey("DifficultyLevelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("S4_Back_End_API.Models.Flavor", "Flavor")
-                        .WithMany()
-                        .HasForeignKey("FlavorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("S4_Back_End_API.Models.TimeOfDay", "TimeOfDay")
-                        .WithMany()
-                        .HasForeignKey("TimeOfDayId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-
-                    b.Navigation("DifficultyLevel");
-
-                    b.Navigation("Flavor");
-
-                    b.Navigation("TimeOfDay");
                 });
 
             modelBuilder.Entity("S4_Back_End_API.Models.Recipe_DietType", b =>
@@ -391,18 +401,37 @@ namespace S4_Back_End_API.Migrations
                     b.Navigation("Recipe");
                 });
 
+            modelBuilder.Entity("S4_Back_End_API.Models.Recipe_TimeOfDay", b =>
+                {
+                    b.HasOne("S4_Back_End_API.Models.Recipe", "Recipe")
+                        .WithMany("Recipe_TimesOfDay")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("S4_Back_End_API.Models.TimeOfDay", "TimeOfDay")
+                        .WithMany("Recipe_TimesOfDay")
+                        .HasForeignKey("TimeOfDayId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipe");
+
+                    b.Navigation("TimeOfDay");
+                });
+
             modelBuilder.Entity("S4_Back_End_API.Models.Recipe_User_Like", b =>
                 {
+                    b.HasOne("S4_Back_End_API.Models.AppUser", "AppUser")
+                        .WithMany("Recipe_User_Likes")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("S4_Back_End_API.Models.Recipe", "Recipe")
                         .WithMany("Recipe_User_Likes")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("S4_Back_End_API.Models.AppUser", "AppUser")
-                        .WithMany("Recipe_User_Likes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("AppUser");
@@ -412,19 +441,30 @@ namespace S4_Back_End_API.Migrations
 
             modelBuilder.Entity("S4_Back_End_API.Models.Recipe_User_Match", b =>
                 {
+                    b.HasOne("S4_Back_End_API.Models.AppUser", "AppUser")
+                        .WithMany("Recipe_User_Matches")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("S4_Back_End_API.Models.Recipe", "Recipe")
                         .WithMany("Recipe_User_Matches")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("S4_Back_End_API.Models.AppUser", "AppUser")
-                        .WithMany("Recipe_User_Matches")
-                        .HasForeignKey("UserId")
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Recipe");
+                });
+
+            modelBuilder.Entity("S4_Back_End_API.Models.RecipeStep", b =>
+                {
+                    b.HasOne("S4_Back_End_API.Models.Recipe", "Recipe")
+                        .WithMany("RecipeSteps")
+                        .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("AppUser");
 
                     b.Navigation("Recipe");
                 });
@@ -447,11 +487,20 @@ namespace S4_Back_End_API.Migrations
                 {
                     b.Navigation("Ingredients");
 
+                    b.Navigation("RecipeSteps");
+
                     b.Navigation("Recipe_DietTypes");
+
+                    b.Navigation("Recipe_TimesOfDay");
 
                     b.Navigation("Recipe_User_Likes");
 
                     b.Navigation("Recipe_User_Matches");
+                });
+
+            modelBuilder.Entity("S4_Back_End_API.Models.TimeOfDay", b =>
+                {
+                    b.Navigation("Recipe_TimesOfDay");
                 });
 #pragma warning restore 612, 618
         }
